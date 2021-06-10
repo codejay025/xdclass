@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net_xdclass.online_xdclass.mapper.UserMapper">
+
+    <!-- 用户注册信息 -->
+    <insert id="save" parameterType="User">
+        insert into user(name,pwd,head_img,phone,create_time)
+        values(#{name,jdbcType=VARCHAR},#{pwd,jdbcType=VARCHAR},#{headImg,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP});
+    </insert>
+    
+    
+    <!-- 注册的时候，先进行查看这个手机号是否存在，手机号存在的话，已经注册先进行验证 -->
+    <select id="findByPhone" resultType="User">
+        select * from user where phone = #{phone};
+    </select>
+
+    <!-- 用户登录的校验，查出来的结果使用User进行封装 -->
+    <select id="findByPhoneAndPwd" resultType="User">
+
+        select * from user where phone = #{phone} and pwd = #{pwd};
+
+    </select>
+
+    <!-- 根据id 查询用户信息 -->
+    <select id="findByUserId" resultType="User">
+        select * from user where id = #{userId};
+
+    </select>
+</mapper>

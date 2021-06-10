@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应的包接口 -->
+<mapper namespace="net_xdclass.online_xdclass.mapper.VideoOrderMapper">
+
+    <!-- 查询用户是否已经下单 -->
+    <select id="findByUserIdAndOrderIdAndState" resultType="VideoOrder">
+        select * from video_order where user_id = #{user_id} and video_id = #{video_id} and state = #{state};
+    </select>
+
+
+    <!-- 下单mapper 设置主键 useGeneratedKeys="true"表示id为自增主键-->
+    <insert id="saveOrder" useGeneratedKeys="true" keyColumn="id" keyProperty="id" >
+        INSERT INTO video_order(`out_trade_no`, `state`, `create_time`, `total_fee`, `video_id`, `video_title`,
+        `video_img`, `user_id`)
+         VALUES (#{outTradeNo,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{totalFee,jdbcType=INTEGER},
+         #{videoId,jdbcType=INTEGER},#{videoTitle,jdbcType=VARCHAR},#{videoImg,jdbcType=VARCHAR},#{userId,jdbcType=INTEGER});
+    </insert>
+
+
+    <!-- 开发视频列表接口,订单列表按照时间倒序排列 -->
+    <select id="listOrderByUserId" resultType="VideoOrder">
+        select * from video_order where user_id = #{user_id} order by create_time desc ;
+    </select>
+</mapper>

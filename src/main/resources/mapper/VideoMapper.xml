@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应的包接口 -->
+<mapper namespace="net_xdclass.online_xdclass.mapper.VideoMapper">
+
+    <!-- 类型是Video的类型，type是查询的结果集封装类-->
+    <resultMap id="VideoDetailResultMap" type="Video">
+        <!-- 主键 -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+
+        <!-- 其他字段的对应 -->
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"/>
+        <result column="cover_img" jdbcType="VARCHAR" property="coverImg"/>
+        <result column="price" jdbcType="INTEGER" property="price"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="point" jdbcType="DOUBLE" property="point"/>
+
+        <!-- Video实体类里面的属性，ofType是集合里面封装的属性 -->
+        <collection property="chapterList" ofType="Chapter">
+            <!-- Chapter的 主键 -->
+            <id column="chapter_id" jdbcType="INTEGER" property="id"/>
+
+            <!-- Chapter的属性 -->
+            <result column="chapter_title" jdbcType="VARCHAR" property="title"/>
+            <result column="ordered" jdbcType="INTEGER" property="ordered"/>
+            <result column="charpter_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+
+            <collection property="episodeList" ofType="Episode">
+                <!-- 主键 -->
+                <id column="episode_id" jdbcType="INTEGER" property="id"/>
+
+                <result column="episode_title" jdbcType="VARCHAR" property="title"/>
+                <result column="num" jdbcType="INTEGER" property="num"/>
+                <result column="episode_ordered" jdbcType="INTEGER" property="ordered"/>
+                <result column="play_url" jdbcType="VARCHAR" property="playUrl"/>
+                <result column="free" jdbcType="INTEGER" property="free"/>
+                <result column="episode_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+
+            </collection>
+        </collection>
+
+    </resultMap>
+
+    <select id="listVideo" resultType="Video">
+        select * from video;
+    </select>
+
+    <select id="listVideoBanner" resultType="VideoBanner">
+        select * from video_banner order by weight asc ;
+    </select>
+
+    <!-- 视频详情信息关联了 三张 表信息 -->
+    <select id="findDetilById" resultMap="VideoDetailResultMap">
+        SELECT
+            v.id,v.title,v.summary,v.cover_img,v.price,v.create_time,v.point,
+            c.id as chapter_id,c.title AS chapter_title,c.ordered,c.create_time as chapter_create_time,
+            e.id as episode_id,e.title as episode_title,e.num,e.ordered as episode_ordered,e.play_url,e.free,e.create_time as episode_create_time
+            from video v
+            LEFT JOIN chapter c on v.id = c.video_id
+            LEFT JOIN episode e on c.id = e.chapter_id
+        where v.id = #{video_id} ORDER BY c.ordered,e.num ASC;
+    </select>
+    <select id="findById" resultType="Video">
+        select * from video where id = #{video_id};
+    </select>
+</mapper>

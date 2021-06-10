@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net_xdclass.online_xdclass.mapper.EpisodeMapper">
+
+    <!-- 通过video_id，查找视频集的信息 -->
+    <select id="findFirstEpisodeByVideoId" resultType="Episode">
+        select * from episode where video_id = #{video_id} and num = 1;
+    </select>
+</mapper>
